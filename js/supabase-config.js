@@ -8,5 +8,5 @@ window.NAIKARA_SUPABASE_CONFIG = {
   SUPABASE_URL: "https://itutuixqjbustzplwise.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_D2y8md966f7uLOfx81TlKg_PYuLW9bY",
   // Halaman tujuan setelah user berhasil Login / Register (ubah sesuai kebutuhan):
-  REDIRECT_AFTER_LOGIN: "/index.html"
+  REDIRECT_AFTER_LOGIN: "/beranda.html"
 };
