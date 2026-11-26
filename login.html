@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Masuk — NAIKARA</title>
+  <meta name="description" content="Masuk atau buat akun NAIKARA untuk mulai membangun karier impianmu dengan bantuan AI." />
+  <link rel="icon" type="image/png" href="./assets/logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Supabase JS SDK v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./js/supabase-config.js"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+          },
+          colors: {
+            naika: {
+              teal: '#0E8375',
+              tealDark: '#095E54',
+              pine: '#0B4F47',
+              mint: '#E3F3F0',
+              mintSoft: '#EFF8F6',
+              gold: '#F2B732',
+              goldHover: '#F6C046',
+              goldEdge: '#C78E12',
+              bg: '#EFF4F6',
+              ink: '#1A202C',
+            }
+          },
+          boxShadow: {
+            'card': '0 22px 45px -15px rgba(15, 23, 42, 0.08)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    html, body {
+      background-color: #EFF4F6;
+      color: #1A202C;
+      overflow-x: clip;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .glass-nav {
+      background: rgba(239, 244, 246, 0.92);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    .btn-naika-gold {
+      background-color: #F2B732;
+      color: #1A202C;
+      border-bottom: 4px solid #C78E12;
+      transition: transform 0.15s ease, background-color 0.15s ease, border-bottom-width 0.15s ease;
+    }
+    .btn-naika-gold:hover:not(:disabled) {
+      background-color: #F6C046;
+      transform: translateY(-1px);
+    }
+    .btn-naika-gold:active:not(:disabled) {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+    .btn-naika-gold:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    .input-pill {
+      border: 1.5px solid #DCE5E9;
+      border-bottom-width: 3px;
+      border-bottom-color: #D2DDE2;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .input-pill:focus {
+      outline: none;
+      border-color: #0E8375;
+      border-bottom-color: #0E8375;
+      box-shadow: 0 0 0 3px rgba(14, 131, 117, 0.12);
+    }
+  </style>
+  <script>
+    function handleImgFallback(imgEl, baseNames) {
+      const list = Array.isArray(baseNames) ? baseNames : [baseNames];
+      const tried = (imgEl.dataset.tried || '').split(',').filter(Boolean);
+      const exts = ['png', 'jpg', 'jpeg', 'webp'];
+      for (const name of list) {
+        for (const ext of exts) {
+          const candidate = name + '.' + ext;
+          if (!tried.includes(candidate)) {
+            tried.push(candidate);
+            imgEl.dataset.tried = tried.join(',');
+            imgEl.src = './assets/' + candidate;
+            return;
+          }
+        }
+      }
+      imgEl.onerror = null;
+    }
+  </script>
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-naika-teal selection:text-white">
+
+  <!-- NAVBAR -->
+  <header class="fixed top-0 inset-x-0 z-50 glass-nav border-b border-slate-200/70">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+      <!-- Brand Logo -->
+      <a href="./index.html" class="flex items-center shrink-0 transition-transform hover:scale-105" aria-label="NAIKARA">
+        <img
+          src="./assets/logo.png"
+          onerror="handleImgFallback(this, 'logo')"
+          alt="NAIKARA"
+          class="h-10 sm:h-12 w-auto object-contain"
+        />
+      </a>
+
+      <!-- Desktop Navigation -->
+      <nav class="hidden md:flex items-center gap-9 text-sm font-bold text-slate-700">
+        <a href="./index.html#cara-kerja" class="hover:text-naika-teal transition-colors">Cara Kerja</a>
+        <a href="./index.html#fitur" class="hover:text-naika-teal transition-colors">Fitur</a>
+        <a href="./index.html#harga" class="hover:text-naika-teal transition-colors">Harga</a>
+        <a href="./index.html#faq" class="hover:text-naika-teal transition-colors">FAQ</a>
+      </nav>
+
+      <!-- Desktop Actions -->
+      <div class="hidden md:flex items-center gap-6">
+        <button type="button" onclick="switchAuthMode('login')" class="text-sm font-extrabold text-naika-teal hover:text-naika-pine transition-colors">
+          Masuk
+        </button>
+        <button type="button" onclick="switchAuthMode('register')" class="btn-naika-gold inline-flex items-center gap-3 font-extrabold text-sm pl-5 pr-2.5 py-2 rounded-full">
+          <span>Mulai Gratis</span>
+          <span class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-xs">→</span>
+        </button>
+      </div>
+
+      <!-- Mobile Menu Button -->
+      <div class="flex md:hidden items-center gap-2">
+        <a href="./index.html" class="text-xs font-bold text-slate-600 px-3 py-2 rounded-full hover:bg-slate-200/60">
+          ← Beranda
+        </a>
+        <button id="mobile-menu-btn" class="p-2.5 rounded-xl text-slate-800 hover:bg-slate-200/70" aria-label="Menu">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 6h16M4 12h16M4 18h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white/95 backdrop-blur-md border-b border-slate-200 px-5 pt-3 pb-5 space-y-1.5 shadow-xl">
+      <a href="./index.html#cara-kerja" class="block py-2.5 px-3 rounded-xl font-bold text-slate-800 hover:bg-naika-mintSoft">Cara Kerja</a>
+      <a href="./index.html#fitur" class="block py-2.5 px-3 rounded-xl font-bold text-slate-800 hover:bg-naika-mintSoft">Fitur</a>
+      <a href="./index.html#harga" class="block py-2.5 px-3 rounded-xl font-bold text-slate-800 hover:bg-naika-mintSoft">Harga</a>
+      <a href="./index.html#faq" class="block py-2.5 px-3 rounded-xl font-bold text-slate-800 hover:bg-naika-mintSoft">FAQ</a>
+    </div>
+  </header>
+
+  <!-- MAIN AUTH SECTION -->
+  <main class="flex-1 pt-24 pb-12 sm:pt-32 sm:pb-16 flex items-center">
+    <div class="max-w-6xl w-full mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+        
+        <!-- Left Brand Pitch & Mascot -->
+        <div class="lg:col-span-6 space-y-5 sm:space-y-6 text-center lg:text-left order-2 lg:order-1">
+          <!-- Mascot -->
+          <div class="flex justify-center lg:justify-start">
+            <div class="w-36 h-36 sm:w-48 sm:h-48 lg:w-52 lg:h-52 flex items-center justify-center">
+              <img
+                id="auth-mascot"
+                src="./assets/mascot-hero.png"
+                onerror="handleImgFallback(this, ['mascot-hero'])"
+                alt="Mascot NAIKARA"
+                class="w-full h-full object-contain drop-shadow-sm"
+              />
+            </div>
+          </div>
+
+          <!-- Pill Tag -->
+          <div>
+            <span class="inline-block px-4 py-1.5 rounded-full bg-naika-mint text-naika-teal text-xs sm:text-sm font-extrabold">
+              AI Career Agent
+            </span>
+          </div>
+
+          <!-- Title -->
+          <h1 class="text-3xl sm:text-4xl lg:text-[2.75rem] font-extrabold text-slate-900 leading-[1.15] tracking-tight max-w-md mx-auto lg:mx-0">
+            Bangun karier impianmu dengan bantuan AI
+          </h1>
+
+          <!-- Subtitle -->
+          <p class="text-sm sm:text-base text-slate-600 leading-relaxed max-w-md mx-auto lg:mx-0">
+            Temukan peluang yang relevan, perkuat CV, dan siapkan interview dalam satu tempat.
+          </p>
+        </div>
+
+        <!-- Right Auth Card -->
+        <div class="lg:col-span-6 order-1 lg:order-2">
+          <div class="bg-white rounded-[2rem] p-6 sm:p-10 shadow-card border border-slate-200/80 max-w-[490px] mx-auto">
+            
+            <!-- Dynamic Card Heading -->
+            <div class="mb-6">
+              <h2 id="auth-heading" class="text-2xl sm:text-[1.85rem] font-extrabold text-slate-900 leading-tight">
+                Buat akun NAIKARA barumu
+              </h2>
+              <p id="auth-subheading" class="text-sm text-slate-500 mt-2 leading-relaxed">
+                Mulai bangun profil karier yang dirancang khusus untuk potensimu.
+              </p>
+            </div>
+
+            <!-- Segmented Pill Switcher: Masuk | Daftar Akun -->
+            <div class="bg-[#EFF3F5] p-1.5 rounded-full grid grid-cols-2 mb-6">
+              <button
+                type="button"
+                id="tab-btn-login"
+                onclick="switchAuthMode('login')"
+                class="min-h-[42px] py-2 rounded-full text-sm font-bold text-slate-600 transition-all"
+              >
+                Masuk
+              </button>
+              <button
+                type="button"
+                id="tab-btn-register"
+                onclick="switchAuthMode('register')"
+                class="min-h-[42px] py-2 rounded-full text-sm font-extrabold bg-white text-slate-900 shadow-sm transition-all"
+              >
+                Daftar Akun
+              </button>
+            </div>
+
+            <!-- Alert / Feedback Box -->
+            <div id="auth-alert" class="hidden mb-5 p-3.5 rounded-2xl text-xs sm:text-sm font-semibold leading-relaxed"></div>
+
+            <!-- AUTH FORM -->
+            <form id="auth-form" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+              
+              <!-- Nama Lengkap (Hanya muncul saat mode Daftar Akun) -->
+              <div id="field-fullname">
+                <label for="input-fullname" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">
+                  Nama lengkap
+                </label>
+                <input
+                  id="input-fullname"
+                  type="text"
+                  placeholder="Nama lengkap"
+                  autocomplete="name"
+                  class="input-pill w-full px-5 py-3.5 rounded-full bg-white text-base sm:text-sm text-slate-900 placeholder:text-slate-400"
+                />
+              </div>
+
+              <!-- Email -->
+              <div>
+                <label for="input-email" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">
+                  Email
+                </label>
+                <input
+                  id="input-email"
+                  type="email"
+                  required
+                  placeholder="nama@email.com"
+                  autocomplete="email"
+                  class="input-pill w-full px-5 py-3.5 rounded-full bg-white text-base sm:text-sm text-slate-900 placeholder:text-slate-400"
+                />
+              </div>
+
+              <!-- Kata Sandi -->
+              <div>
+                <label for="input-password" class="block text-xs sm:text-sm font-extrabold text-slate-800 mb-1.5">
+                  Kata sandi
+                </label>
+                <div class="relative">
+                  <input
+                    id="input-password"
+                    type="password"
+                    required
+                    minlength="8"
+                    placeholder="Minimal 8 karakter"
+                    autocomplete="new-password"
+                    class="input-pill w-full pl-5 pr-12 py-3.5 rounded-full bg-white text-base sm:text-sm text-slate-900 placeholder:text-slate-400"
+                  />
+                  <button
+                    type="button"
+                    onclick="togglePasswordVisibility()"
+                    aria-label="Tampilkan atau sembunyikan kata sandi"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 text-slate-500 hover:text-slate-800 transition-colors"
+                  >
+                    <svg id="eye-open" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                      <circle cx="12" cy="12" r="3"/>
+                    </svg>
+                    <svg id="eye-closed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l18 18"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Lupa Kata Sandi (Hanya muncul saat mode Masuk) -->
+              <div id="forgot-password-row" class="hidden text-right pt-0.5">
+                <button
+                  type="button"
+                  onclick="handleForgotPassword()"
+                  class="text-xs sm:text-sm font-extrabold text-naika-teal hover:text-naika-pine transition-colors"
+                >
+                  Lupa kata sandi?
+                </button>
+              </div>
+
+              <!-- Submit Button -->
+              <div class="pt-2">
+                <button
+                  type="submit"
+                  id="submit-btn"
+                  class="btn-naika-gold min-h-[54px] w-full py-3.5 px-6 rounded-full font-extrabold text-base inline-flex items-center justify-center gap-3"
+                >
+                  <span id="submit-btn-text">Daftar Akun</span>
+                  <span class="w-7 h-7 rounded-full bg-slate-900 text-white flex items-center justify-center text-sm">→</span>
+                </button>
+              </div>
+            </form>
+
+            <!-- Bottom Switch Text -->
+            <p id="bottom-switch-text" class="text-center text-xs sm:text-sm text-slate-600 mt-5">
+              Sudah punya akun?
+              <button type="button" onclick="switchAuthMode('login')" class="font-extrabold text-naika-teal hover:underline ml-0.5">
+                Masuk di sini
+              </button>
+            </p>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    menuBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('hidden');
+    });
+
+    let supabaseClient = null;
+    function getSupabase() {
+      if (supabaseClient) return supabaseClient;
+      const cfg = window.NAIKARA_SUPABASE_CONFIG || {};
+      if (
+        !cfg.SUPABASE_URL ||
+        cfg.SUPABASE_URL.includes('YOUR_PROJECT_ID') ||
+        !cfg.SUPABASE_ANON_KEY ||
+        cfg.SUPABASE_ANON_KEY.includes('YOUR_SUPABASE_ANON_PUBLIC_KEY')
+      ) {
+        return null;
+      }
+      supabaseClient = window.supabase.createClient(cfg.SUPABASE_URL, cfg.SUPABASE_ANON_KEY);
+      return supabaseClient;
+    }
+
+    let currentMode = 'login';
+
+    function showAlert(type, message) {
+      const box = document.getElementById('auth-alert');
+      box.classList.remove('hidden', 'bg-rose-50', 'text-rose-700', 'border-rose-200', 'bg-emerald-50', 'text-emerald-800', 'border-emerald-200', 'bg-amber-50', 'text-amber-900', 'border-amber-200');
+      box.classList.add('border');
+      if (type === 'error') {
+        box.classList.add('bg-rose-50', 'text-rose-700', 'border-rose-200');
+      } else if (type === 'warning') {
+        box.classList.add('bg-amber-50', 'text-amber-900', 'border-amber-200');
+      } else {
+        box.classList.add('bg-emerald-50', 'text-emerald-800', 'border-emerald-200');
+      }
+      box.innerHTML = message;
+    }
+
+    function hideAlert() {
+      document.getElementById('auth-alert').classList.add('hidden');
+    }
+
+    function switchAuthMode(mode) {
+      currentMode = mode;
+      hideAlert();
+
+      const heading = document.getElementById('auth-heading');
+      const subheading = document.getElementById('auth-subheading');
+      const tabLogin = document.getElementById('tab-btn-login');
+      const tabRegister = document.getElementById('tab-btn-register');
+      const fieldFullname = document.getElementById('field-fullname');
+      const inputFullname = document.getElementById('input-fullname');
+      const inputPassword = document.getElementById('input-password');
+      const forgotRow = document.getElementById('forgot-password-row');
+      const submitText = document.getElementById('submit-btn-text');
+      const bottomSwitch = document.getElementById('bottom-switch-text');
+      const mascotImg = document.getElementById('auth-mascot');
+
+      if (mode === 'login') {
+        document.title = 'Masuk — NAIKARA';
+        heading.textContent = 'Masuk untuk lanjut membangun kariermu';
+        subheading.textContent = 'Akses AI Career Agent dan temukan peluang terbaik untuk masa depanmu.';
+
+        tabLogin.classList.add('bg-white', 'text-slate-900', 'shadow-sm', 'font-extrabold');
+        tabLogin.classList.remove('text-slate-600', 'font-bold');
+
+        tabRegister.classList.remove('bg-white', 'text-slate-900', 'shadow-sm', 'font-extrabold');
+        tabRegister.classList.add('text-slate-600', 'font-bold');
+
+        fieldFullname.classList.add('hidden');
+        inputFullname.required = false;
+        inputPassword.setAttribute('autocomplete', 'current-password');
+        forgotRow.classList.remove('hidden');
+
+        submitText.textContent = 'Masuk';
+        bottomSwitch.innerHTML = 'Belum punya akun? <button type="button" onclick="switchAuthMode(\'register\')" class="font-extrabold text-naika-teal hover:underline ml-0.5">Daftar sekarang</button>';
+
+        mascotImg.dataset.tried = '';
+        mascotImg.src = './assets/mascot-login.png';
+        mascotImg.onerror = function() { handleImgFallback(this, ['mascot-login', 'mascot-hero']); };
+      } else {
+        document.title = 'Daftar Akun — NAIKARA';
+        heading.textContent = 'Buat akun NAIKARA barumu';
+        subheading.textContent = 'Mulai bangun profil karier yang dirancang khusus untuk potensimu.';
+
+        tabRegister.classList.add('bg-white', 'text-slate-900', 'shadow-sm', 'font-extrabold');
+        tabRegister.classList.remove('text-slate-600', 'font-bold');
+
+        tabLogin.classList.remove('bg-white', 'text-slate-900', 'shadow-sm', 'font-extrabold');
+        tabLogin.classList.add('text-slate-600', 'font-bold');
+
+        fieldFullname.classList.remove('hidden');
+        inputFullname.required = true;
+        inputPassword.setAttribute('autocomplete', 'new-password');
+        forgotRow.classList.add('hidden');
+
+        submitText.textContent = 'Daftar Akun';
+        bottomSwitch.innerHTML = 'Sudah punya akun? <button type="button" onclick="switchAuthMode(\'login\')" class="font-extrabold text-naika-teal hover:underline ml-0.5">Masuk di sini</button>';
+
+        mascotImg.dataset.tried = '';
+        mascotImg.src = './assets/mascot-hero.png';
+        mascotImg.onerror = function() { handleImgFallback(this, ['mascot-hero']); };
+      }
+    }
+
+    function togglePasswordVisibility() {
+      const input = document.getElementById('input-password');
+      const eyeOpen = document.getElementById('eye-open');
+      const eyeClosed = document.getElementById('eye-closed');
+      if (input.type === 'password') {
+        input.type = 'text';
+        eyeOpen.classList.add('hidden');
+        eyeClosed.classList.remove('hidden');
+      } else {
+        input.type = 'password';
+        eyeOpen.classList.remove('hidden');
+        eyeClosed.classList.add('hidden');
+      }
+    }
+
+    function translateSupabaseError(msg) {
+      if (!msg) return 'Terjadi kesalahan. Silakan coba lagi.';
+      const lower = msg.toLowerCase();
+      if (lower.includes('invalid login credentials')) return 'Email atau kata sandi salah. Periksa kembali dan coba lagi.';
+      if (lower.includes('user already registered')) return 'Email ini sudah terdaftar. Silakan masuk menggunakan akunmu.';
+      if (lower.includes('email not confirmed')) return 'Email kamu belum dikonfirmasi. Cek kotak masuk atau folder spam emailmu.';
+      if (lower.includes('password should be at least')) return 'Kata sandi minimal harus 8 karakter.';
+      return msg;
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      hideAlert();
+
+      const supabase = getSupabase();
+      if (!supabase) {
+        showAlert(
+          'warning',
+          '<strong>Supabase belum terhubung:</strong> Buka file <code>js/supabase-config.js</code> lalu isi <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code> dari dashboard proyek Supabase kamu.'
+        );
+        return;
+      }
+
+      const fullName = document.getElementById('input-fullname').value.trim();
+      const email = document.getElementById('input-email').value.trim();
+      const password = document.getElementById('input-password').value;
+      const submitBtn = document.getElementById('submit-btn');
+      const submitText = document.getElementById('submit-btn-text');
+      const originalLabel = submitText.textContent;
+
+      submitBtn.disabled = true;
+      submitText.textContent = currentMode === 'register' ? 'Mendaftarkan...' : 'Memproses...';
+
+      try {
+        if (currentMode === 'register') {
+          const { data, error } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                full_name: fullName
+              }
+            }
+          });
+
+          if (error) throw error;
+
+          if (data.session) {
+            showAlert('success', 'Akun berhasil dibuat! Mengarahkan ke workspace NAIKARA...');
+            setTimeout(() => {
+              window.location.href = window.NAIKARA_SUPABASE_CONFIG.REDIRECT_AFTER_LOGIN || './index.html';
+            }, 1200);
+          } else {
+            showAlert('success', 'Pendaftaran berhasil! Silakan cek email <strong>' + email + '</strong> untuk konfirmasi akun sebelum masuk.');
+          }
+        } else {
+          const { data, error } = await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+
+          if (error) throw error;
+
+          showAlert('success', 'Berhasil masuk! Mengarahkan ke workspace NAIKARA...');
+          setTimeout(() => {
+            window.location.href = window.NAIKARA_SUPABASE_CONFIG.REDIRECT_AFTER_LOGIN || './index.html';
+          }, 1000);
+        }
+      } catch (err) {
+        showAlert('error', translateSupabaseError(err.message));
+      } finally {
+        submitBtn.disabled = false;
+        submitText.textContent = originalLabel;
+      }
+    }
+
+    async function handleForgotPassword() {
+      hideAlert();
+      const supabase = getSupabase();
+      if (!supabase) {
+        showAlert('warning', 'Isi <code>SUPABASE_URL</code> dan <code>SUPABASE_ANON_KEY</code> di <code>js/supabase-config.js</code> terlebih dahulu.');
+        return;
+      }
+      const email = document.getElementById('input-email').value.trim();
+      if (!email) {
+        showAlert('warning', 'Masukkan alamat email kamu pada kolom Email di atas terlebih dahulu, lalu klik <strong>Lupa kata sandi?</strong>.');
+        document.getElementById('input-email').focus();
+        return;
+      }
+
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: window.location.origin + '/login.html'
+      });
+
+      if (error) {
+        showAlert('error', translateSupabaseError(error.message));
+      } else {
+        showAlert('success', 'Tautan reset kata sandi telah dikirim ke <strong>' + email + '</strong>.');
+      }
+    }
+
+    (function initModeFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      const urlMode = params.get('mode');
+      if (urlMode === 'login' || urlMode === 'register') {
+        switchAuthMode(urlMode);
+      } else {
+        switchAuthMode(currentMode);
+      }
+    })();
+  </script>
+</body>
+</html>
