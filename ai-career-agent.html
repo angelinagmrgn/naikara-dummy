@@ -32,7 +32,7 @@
               gold: '#F2B732',
               goldHover: '#F6C046',
               goldEdge: '#C78E12',
-              bg: '#EFF4F6',
+              bg: '#FFFFFF',
               ink: '#1A202C',
             }
           },
@@ -46,7 +46,7 @@
   </script>
   <style>
     html, body {
-      background-color: #EFF4F6;
+      background-color: #FFFFFF;
       color: #1A202C;
       overflow-x: clip;
       -webkit-tap-highlight-color: transparent;
@@ -93,7 +93,7 @@
     }
   </script>
 </head>
-<body class="min-h-screen flex antialiased selection:bg-naika-teal selection:text-white">
+<body class="min-h-screen bg-white flex antialiased selection:bg-naika-teal selection:text-white">
 
   <!-- MOBILE SIDEBAR BACKDROP -->
   <div id="sidebar-backdrop" onclick="closeSidebar()" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs hidden lg:hidden"></div>
@@ -185,11 +185,10 @@
   </aside>
 
   <!-- MAIN WORKSPACE WRAPPER -->
-  <div class="flex-1 flex flex-col min-w-0">
+  <div class="flex-1 flex flex-col min-w-0 bg-white">
 
     <!-- TOP BAR -->
-    <header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#EFF4F6]/90 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
-      <!-- Left: Hamburger + Page Title -->
+    <header class="sticky top-0 z-30 h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
       <div class="flex items-center gap-3">
         <button onclick="openSidebar()" class="lg:hidden p-2.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50" aria-label="Buka Sidebar">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
@@ -199,9 +198,7 @@
         <span class="text-base sm:text-lg font-extrabold text-slate-900">AI Career Agent</span>
       </div>
 
-      <!-- Right: Search + Notification + Profile Dropdown -->
       <div class="flex items-center gap-2.5 sm:gap-3.5">
-        <!-- Search Box (Desktop/Tablet) -->
         <div class="hidden md:flex items-center gap-2.5 bg-white border border-slate-200/90 rounded-full px-4 py-2.5 w-64 xl:w-80 shadow-2xs focus-within:border-naika-teal transition-colors">
           <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M17 11a6 6 0 11-12 0 6 6 0 0112 0z"/>
@@ -214,7 +211,6 @@
           />
         </div>
 
-        <!-- Bell Notification -->
         <button type="button" onclick="showToast('NAIKARA Agent siap membantu persiapan kariermu!')" class="relative w-10 h-10 rounded-full bg-white border border-slate-200/90 flex items-center justify-center text-slate-600 hover:bg-slate-50 transition-colors shrink-0" aria-label="Notifikasi">
           <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="1.9" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/>
@@ -222,7 +218,6 @@
           <span class="absolute top-2 right-2.5 w-2 h-2 rounded-full bg-amber-500"></span>
         </button>
 
-        <!-- User Profile Dropdown -->
         <div class="relative">
           <button
             type="button"
@@ -259,9 +254,9 @@
     </header>
 
     <!-- MAIN CONTENT CONTAINER -->
-    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl w-full mx-auto">
+    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl w-full mx-auto bg-white">
 
-      <!-- TWO-COLUMN WORKSPACE GRID (Left 8 cols: Chat Workspace, Right 4 cols: Context Sidebar) -->
+      <!-- TWO-COLUMN WORKSPACE GRID -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
         <!-- LEFT COLUMN (8 COLS): TITLE + ACTION BUTTONS + MAIN CHAT CARD -->
@@ -324,7 +319,7 @@
             </div>
 
             <!-- Chat Messages Scroll Area -->
-            <div id="chat-messages" class="flex-1 p-5 sm:p-6 space-y-5 overflow-y-auto chat-scroll max-h-[380px] sm:max-h-[420px]">
+            <div id="chat-messages" class="flex-1 p-5 sm:p-6 space-y-5 overflow-y-auto chat-scroll max-h-[380px] sm:max-h-[420px] bg-white">
               
               <!-- Date Pill -->
               <div class="flex justify-center">
@@ -380,7 +375,6 @@
 
               <!-- Input Bar -->
               <form id="chat-form" onsubmit="handleChatSubmit(event)" class="flex items-center gap-2.5">
-                <!-- Attachment Button -->
                 <label
                   title="Lampirkan file CV atau deskripsi lowongan"
                   class="w-10 h-10 sm:w-11 sm:h-11 rounded-full bg-[#F1F5F8] hover:bg-slate-200/80 text-slate-500 flex items-center justify-center cursor-pointer shrink-0 transition-colors"
@@ -391,7 +385,6 @@
                   </svg>
                 </label>
 
-                <!-- Text Input -->
                 <div class="flex-1 bg-[#F1F5F8] focus-within:bg-white focus-within:ring-2 focus-within:ring-naika-teal/30 focus-within:border-naika-teal border border-transparent rounded-full px-4 sm:px-5 py-2.5 sm:py-3 transition-all">
                   <input
                     id="chat-input"
@@ -402,7 +395,6 @@
                   />
                 </div>
 
-                <!-- Send Button -->
                 <button
                   type="submit"
                   aria-label="Kirim pesan"
@@ -414,7 +406,6 @@
                 </button>
               </form>
 
-              <!-- Disclaimer -->
               <p class="text-center text-[11px] text-slate-400">
                 AI dapat keliru. Periksa kembali detail di sumber lowongan.
               </p>
@@ -442,7 +433,6 @@
               </a>
             </div>
 
-            <!-- Mascot + Name & Target Karier -->
             <div class="flex items-center gap-3.5">
               <div class="w-12 h-12 shrink-0 flex items-center justify-center">
                 <img
@@ -459,7 +449,6 @@
               </div>
             </div>
 
-            <!-- Keahlian Utama -->
             <div class="space-y-2 pt-1">
               <div class="text-xs font-bold text-slate-500">Keahlian Utama</div>
               <div class="flex flex-wrap gap-1.5">
@@ -487,7 +476,6 @@
               </label>
             </div>
 
-            <!-- Active PDF Box -->
             <div class="bg-[#F4F7F9] border border-slate-200/70 rounded-2xl p-3.5 flex items-center gap-3">
               <div class="w-10 h-11 rounded-xl bg-white border border-slate-200/80 flex items-center justify-center text-[10px] font-extrabold text-slate-600 shrink-0 shadow-2xs">
                 PDF
@@ -558,7 +546,6 @@
             </div>
 
             <div class="space-y-2.5">
-              <!-- Item 1 -->
               <button type="button" onclick="sendQuickPrompt('Carikan peluang kerja yang paling sesuai dengan profil Marketing Administration saya di Jakarta')" class="w-full text-left bg-[#F4F7F9] hover:bg-naika-mintSoft rounded-2xl p-3.5 flex items-start gap-3 transition-colors group">
                 <span class="w-5 h-5 rounded-full border border-naika-teal text-naika-teal flex items-center justify-center shrink-0 mt-0.5 text-[11px]">✓</span>
                 <div>
@@ -567,7 +554,6 @@
                 </div>
               </button>
 
-              <!-- Item 2 -->
               <button type="button" onclick="sendQuickPrompt('Jelaskan seberapa cocok profil dan skill saya dengan lowongan Marketing Administration')" class="w-full text-left bg-[#F4F7F9] hover:bg-naika-mintSoft rounded-2xl p-3.5 flex items-start gap-3 transition-colors group">
                 <span class="w-5 h-5 rounded-full border border-naika-teal text-naika-teal flex items-center justify-center shrink-0 mt-0.5 text-[11px]">✓</span>
                 <div>
@@ -576,7 +562,6 @@
                 </div>
               </button>
 
-              <!-- Item 3 -->
               <button type="button" onclick="sendQuickPrompt('Berikan saran perbaikan poin pencapaian di CV aktif saya agar lebih menonjol')" class="w-full text-left bg-[#F4F7F9] hover:bg-naika-mintSoft rounded-2xl p-3.5 flex items-start gap-3 transition-colors group">
                 <span class="w-5 h-5 rounded-full border border-naika-teal text-naika-teal flex items-center justify-center shrink-0 mt-0.5 text-[11px]">✓</span>
                 <div>
@@ -585,7 +570,6 @@
                 </div>
               </button>
 
-              <!-- Item 4 -->
               <button type="button" onclick="sendQuickPrompt('Latih saya menjawab pertanyaan interview untuk posisi Marketing Administration')" class="w-full text-left bg-[#F4F7F9] hover:bg-naika-mintSoft rounded-2xl p-3.5 flex items-start gap-3 transition-colors group">
                 <span class="w-5 h-5 rounded-full border border-naika-teal text-naika-teal flex items-center justify-center shrink-0 mt-0.5 text-[11px]">✓</span>
                 <div>
@@ -630,7 +614,6 @@
   <script>
     let currentUserFirstName = 'Angelina';
 
-    // Smart Contextual Replies for Interactive Demo
     function generateAgentReply(userText) {
       const q = userText.toLowerCase();
       if (q.includes('bandingkan') || q.includes('peluang')) {
@@ -754,7 +737,6 @@
         .replace(/"/g, '&quot;');
     }
 
-    // Mobile Sidebar Drawer
     const sidebar = document.getElementById('app-sidebar');
     const backdrop = document.getElementById('sidebar-backdrop');
     function openSidebar() {
@@ -766,7 +748,6 @@
       backdrop.classList.add('hidden');
     }
 
-    // Profile Dropdown
     function toggleProfileMenu() {
       document.getElementById('profile-dropdown').classList.toggle('hidden');
     }
@@ -777,7 +758,6 @@
       }
     });
 
-    // Toast Helper
     let toastTimer = null;
     function showToast(msg) {
       const box = document.getElementById('toast-box');
@@ -791,7 +771,6 @@
       }, 2800);
     }
 
-    // Supabase Session Loader
     let supabaseClient = null;
     function getSupabase() {
       if (supabaseClient) return supabaseClient;

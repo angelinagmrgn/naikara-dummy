@@ -32,7 +32,7 @@
               gold: '#F2B732',
               goldHover: '#F6C046',
               goldEdge: '#C78E12',
-              bg: '#EFF4F6',
+              bg: '#FFFFFF',
               ink: '#1A202C',
             }
           },
@@ -46,7 +46,7 @@
   </script>
   <style>
     html, body {
-      background-color: #EFF4F6;
+      background-color: #FFFFFF;
       color: #1A202C;
       overflow-x: clip;
       -webkit-tap-highlight-color: transparent;
@@ -99,7 +99,7 @@
     }
   </script>
 </head>
-<body class="min-h-screen flex antialiased selection:bg-naika-teal selection:text-white">
+<body class="min-h-screen bg-white flex antialiased selection:bg-naika-teal selection:text-white">
 
   <!-- MOBILE SIDEBAR BACKDROP -->
   <div id="sidebar-backdrop" onclick="closeSidebar()" class="fixed inset-0 z-40 bg-slate-900/40 backdrop-blur-xs hidden lg:hidden"></div>
@@ -191,10 +191,10 @@
   </aside>
 
   <!-- MAIN WORKSPACE WRAPPER -->
-  <div class="flex-1 flex flex-col min-w-0">
+  <div class="flex-1 flex flex-col min-w-0 bg-white">
 
     <!-- TOP BAR -->
-    <header class="sticky top-0 z-30 h-16 sm:h-20 bg-[#EFF4F6]/90 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
+    <header class="sticky top-0 z-30 h-16 sm:h-20 bg-white/95 backdrop-blur-md border-b border-slate-200/70 px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-3">
       <!-- Left: Hamburger + Page Title -->
       <div class="flex items-center gap-3">
         <button onclick="openSidebar()" class="lg:hidden p-2.5 rounded-xl bg-white border border-slate-200/80 text-slate-700 hover:bg-slate-50" aria-label="Buka Sidebar">
@@ -253,8 +253,8 @@
             <a href="./beranda.html" class="block px-4 py-2 text-xs font-bold text-slate-700 hover:bg-naika-mintSoft hover:text-naika-teal">
               Beranda Dashboard
             </a>
-            <a href="./beranda.html#persona-card" class="block px-4 py-2 text-xs font-bold text-slate-700 hover:bg-naika-mintSoft hover:text-naika-teal">
-              CV & Career Persona
+            <a href="./ai-career-agent.html" class="block px-4 py-2 text-xs font-bold text-slate-700 hover:bg-naika-mintSoft hover:text-naika-teal">
+              AI Career Agent
             </a>
             <div class="border-t border-slate-100 my-1"></div>
             <button type="button" onclick="handleLogout()" class="w-full text-left px-4 py-2 text-xs font-extrabold text-rose-600 hover:bg-rose-50">
@@ -266,7 +266,7 @@
     </header>
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl w-full mx-auto space-y-5 sm:space-y-6">
+    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-6xl w-full mx-auto space-y-5 sm:space-y-6 bg-white">
 
       <!-- Mobile Search Box -->
       <div class="md:hidden flex items-center gap-2.5 bg-white border border-slate-200/90 rounded-full px-4 py-2.5 shadow-2xs">
@@ -554,7 +554,7 @@
     </main>
   </div>
 
-  <!-- JOB DETAIL MODAL (Saat user klik kartu lowongan) -->
+  <!-- JOB DETAIL MODAL -->
   <div id="job-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs">
     <div class="bg-white rounded-[1.75rem] max-w-lg w-full p-6 sm:p-7 border border-slate-200 shadow-2xl space-y-5 relative max-h-[90vh] overflow-y-auto">
       <button type="button" onclick="closeJobModal()" class="absolute top-5 right-5 w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 flex items-center justify-center font-bold" aria-label="Tutup">
@@ -582,10 +582,6 @@
   </div>
 
   <script>
-    // =========================================================================
-    // 1. SAMPLE FALLBACK DATA (Struktur kolom identik dengan tabel `scraped_jobs`
-    //    di Supabase yang akan diisi otomatis oleh scraper engineer kamu)
-    // =========================================================================
     const FALLBACK_SCRAPED_JOBS = [
       {
         id: 'job-1',
@@ -636,9 +632,6 @@
     let activeTab = 'for_you';
     let searchQuery = '';
 
-    // =========================================================================
-    // 2. SUPABASE CLIENT & LOADER DARI TABEL `scraped_jobs`
-    // =========================================================================
     let supabaseClient = null;
     function getSupabase() {
       if (supabaseClient) return supabaseClient;
@@ -653,7 +646,6 @@
     async function initPageData() {
       const supabase = getSupabase();
       if (supabase) {
-        // Load User Profile
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
           const rawName = (user.user_metadata && user.user_metadata.full_name) || (user.email ? user.email.split('@')[0] : 'Angelina');
@@ -663,7 +655,6 @@
           if (user.email) document.getElementById('dropdown-user-email').textContent = user.email;
         }
 
-        // Fetch scraped jobs from Supabase table `scraped_jobs` (filled by engineer's scraper)
         try {
           const { data, error } = await supabase
             .from('scraped_jobs')
@@ -676,8 +667,6 @@
             allJobs = data.map((row, idx) => ({
               id: row.id || 'db-' + idx,
               source: row.source || 'Job Portal',
-              source_badge_code: (row.source || '').toLowerCase().includes('jobstreet') ? 'pt' : '★',
-              source_badge_bg: (row.source || '').toLowerCase().includes('jobstreet') ? 'bg-sky-600 text-white' : 'bg-amber-50 text-amber-500',
               title: row.title || 'Posisi Tersedia',
               company: row.company || 'Perusahaan',
               location: row.location || 'Indonesia',
@@ -697,7 +686,7 @@
             document.getElementById('data-source-label').textContent = 'Live Supabase Scraper';
           }
         } catch (err) {
-          console.warn('Menggunakan data preview lokal sambil menunggu tabel scraped_jobs diisi:', err);
+          console.warn('Menggunakan data preview lokal:', err);
         }
       }
 
@@ -713,9 +702,6 @@
       return fmt(min);
     }
 
-    // =========================================================================
-    // 3. FILTERING, TABS, SORTING & RENDERING
-    // =========================================================================
     function setActiveTab(tab) {
       activeTab = tab;
       document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -780,7 +766,6 @@
         return true;
       });
 
-      // Sorting
       if (sortBy === 'match_desc') {
         filtered.sort((a, b) => b.match_score - a.match_score);
       } else if (sortBy === 'salary_desc') {
@@ -828,7 +813,6 @@
         return `
           <article onclick="openJobModal('${job.id}')" class="bg-white rounded-[1.5rem] p-5 sm:p-6 border border-slate-200/80 shadow-soft hover:border-naika-teal/60 hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4">
             <div class="space-y-3">
-              <!-- Top Source + Bookmark -->
               <div class="flex items-center justify-between gap-2">
                 <div class="inline-flex items-center gap-2 text-xs font-bold text-slate-500">
                   ${sourceIcon}
@@ -846,7 +830,6 @@
                 </button>
               </div>
 
-              <!-- Title & Company -->
               <div>
                 <h3 class="text-base sm:text-lg font-extrabold text-slate-900 leading-snug">
                   ${escapeHtml(job.title)}
@@ -854,7 +837,6 @@
                 <p class="text-xs sm:text-sm text-slate-500 mt-1">${escapeHtml(job.company)}</p>
               </div>
 
-              <!-- Location & Salary -->
               <div class="space-y-1.5 text-xs text-slate-500">
                 <div class="flex items-start gap-1.5">
                   <span class="shrink-0">📍</span>
@@ -867,7 +849,6 @@
               </div>
             </div>
 
-            <!-- Match Badge & Skills -->
             <div class="space-y-2.5 pt-1">
               <div>
                 <span class="inline-block px-3 py-1 rounded-lg bg-emerald-100/80 text-emerald-800 text-xs font-extrabold">
@@ -963,13 +944,11 @@
         .replace(/"/g, '&quot;');
     }
 
-    // Mobile Filter Toggle
     function toggleMobileFilter() {
       const panel = document.getElementById('filter-panel');
       panel.classList.toggle('hidden');
     }
 
-    // Mobile Sidebar Drawer
     const sidebar = document.getElementById('app-sidebar');
     const backdrop = document.getElementById('sidebar-backdrop');
     function openSidebar() {
@@ -981,7 +960,6 @@
       backdrop.classList.add('hidden');
     }
 
-    // Profile Dropdown
     function toggleProfileMenu() {
       document.getElementById('profile-dropdown').classList.toggle('hidden');
     }
@@ -992,7 +970,6 @@
       }
     });
 
-    // Toast Helper
     let toastTimer = null;
     function showToast(msg) {
       const box = document.getElementById('toast-box');
@@ -1012,7 +989,6 @@
       window.location.href = './login.html';
     }
 
-    // Initialize
     initPageData();
   </script>
 </body>
